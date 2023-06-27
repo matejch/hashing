@@ -76,25 +76,22 @@ var Minhash = function() {
 
   }  
 
-  this.gather_strings_from_current_page = function(element, result = []) {   
-        if (element.nodeType === Node.ELEMENT_NODE) {
-            result.push(element.outerHTML); // Use outerHTML to get the element and its content
-        } else if (element.nodeType === Node.TEXT_NODE) {
-            result.push(element.textContent); // Use textContent to get the text within an element
+  function collectTextNodes(element, result = []) {
+    for(let i = 0; i < element.childNodes.length; i++) {
+        const node = element.childNodes[i];
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+            result.push(node.textContent.trim());
+        } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'IFRAME') {
+            collectTextNodes(node, result);
         }
-    
-        for(let i = 0; i < element.childNodes.length; i++) {
-            this.gather_strings_from_current_page(element.childNodes[i], result);
-        }
-    
-        return result;
     }
+    return result;
+}
   
-
   this.init_hashes();
   this.init_permutations();
-  this.page_strings = this.gather_strings_from_current_page(document.body);
-  this.page_strings.map(function(w) { this.update(w) });
+  this.strings = collectTextNodes(document.body);
+  this.strings.map(function(w) { this.update(w) });
 };
 
 if (typeof window !== 'undefined') window.Minhash = Minhash;
