@@ -73,10 +73,28 @@ var Minhash = function() {
       shared += this.hashes[i] == other.hashes[i];
     }
     return shared / this.hashes.length;
-  }
+
+  }  
+
+  this.gather_strings_from_current_page = function(element, result = []) {   
+        if (element.nodeType === Node.ELEMENT_NODE) {
+            result.push(element.outerHTML); // Use outerHTML to get the element and its content
+        } else if (element.nodeType === Node.TEXT_NODE) {
+            result.push(element.textContent); // Use textContent to get the text within an element
+        }
+    
+        for(let i = 0; i < element.childNodes.length; i++) {
+            this.gather_strings_from_current_page(element.childNodes[i], result);
+        }
+    
+        return result;
+    }
+  
 
   this.init_hashes();
   this.init_permutations();
+  this.page_strings = this.gather_strings_from_current_page();
+  this.page_strings.map(function(w) { this.update(w) });
 };
 
 if (typeof window !== 'undefined') window.Minhash = Minhash;
