@@ -91,7 +91,7 @@ var Minhash = function() {
   this.init_hashes();
   this.init_permutations();
   this.strings = collectTextNodes(document.body);
-  this.strings.map(function(w) { this.update(w) });
+  this.strings.map(w => { this.update(w) });
 };
 
 if (typeof window !== 'undefined') window.Minhash = Minhash;
