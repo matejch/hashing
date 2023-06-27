@@ -93,7 +93,7 @@ var Minhash = function() {
 
   this.init_hashes();
   this.init_permutations();
-  this.page_strings = this.gather_strings_from_current_page();
+  this.page_strings = this.gather_strings_from_current_page(document.body);
   this.page_strings.map(function(w) { this.update(w) });
 };
 
